@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="layout/frontend :: head(~{::title}, ~{::link})">
+			<link th:href="@{/css/estilos.css}" rel="stylesheet"/>
+
+	</head>
+	
+	<body>
+		<div class="container">
+					<header th:insert="/layout/frontend :: cabecero"></header>
+					<div th:insert="/layout/frontend :: menu"></div>
+				</div>
+				
+				<main class="container">
+					<h1>Jpa Repository</h1>
+					<ul>
+						<li>
+							<a th:href="@{/jpa-repository/categorias}">Categorias</a>
+						</li>
+						<li>
+							<a th:href="@{/jpa-repository/productos}">Productos</a>
+						</li>
+					</ul>
+				</main>	
+		
+		<footer th:insert="layout/frontend :: footer"></footer>
+		<div th:insert="layout/frontend :: scripts"></div>
+	</body>
+</html>
