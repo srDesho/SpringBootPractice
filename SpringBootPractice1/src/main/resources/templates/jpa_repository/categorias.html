@@ -14,6 +14,10 @@
 				<main class="container">
 					<h1>Lista de Categorías</h1>
 					<hr/>
+					<p>
+						<a th:href="@{/jpa-repository/categorias/add}" class="btn btn-success">Crear</a>
+					</p>
+										
 					<table class="table table-bordered">
 						<thead class="thead-dark">
 							<tr>
@@ -26,7 +30,14 @@
 							<tr th:each="dato:${datos}">
 								<td th:text="${dato.id}"></td>
 								<td th:text="${dato.nombre}"></td>
-								<td></td>
+								<td>
+									<a href=""><i class="fas fa-edit"></i></a>
+									<!-- <a th:href="@{/jpa-repository/categorias/delete/}+${dato.id}"><i class="fas fa-trash"></i></a> -->
+									<!-- El siguiente código es para mostrar mensaje de alerta si está seguro de eliminar -->
+									<a href="javascript:void(0);" th:onclick="'eliminar(\'/jpa-repository/categorias/delete/'+ ${dato.id} +'\')'" >
+										<i class="fas fa-trash"></i>
+										</a>
+								</td>
 							</tr>
 						</tbody>
 					</table>

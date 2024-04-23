@@ -22,4 +22,23 @@ public class CategoriaService {
 	public List<CategoriaModel> listar() {
 		return repository.findAll();
 	}
+	
+	// Agregar categoria
+	public void save(CategoriaModel categoria) {
+		repository.save(categoria);
+	}
+	
+	// Buscar por slug
+	public boolean buscarPorSlug(String slug) {
+		if( repository.existsBySlug(slug) ) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	
+	
+	
+	
 }

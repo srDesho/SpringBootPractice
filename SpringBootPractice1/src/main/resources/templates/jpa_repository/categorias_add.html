@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="layout/frontend :: head(~{::title}, ~{::link})">
+			<link th:href="@{/css/estilos.css}" rel="stylesheet"/>
+
+	</head>
+	
+	<body>
+		<div class="container">
+					<header th:insert="/layout/frontend :: cabecero"></header>
+					<div th:insert="/layout/frontend :: menu"></div>
+				</div>
+				
+				<main class="container">
+					<h1>Agregar Categoría</h1>
+					<div th:if="${mensaje!=null}" th:class="'alert alert-' + ${clase} + ' alert-dismissible fade show'">
+							<span th:text="${mensaje}"></span>
+							<button th:if="${mensaje!=null}" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+					<div>
+						<form name="form" th:object="${categoria}" th:action="@{/jpa-repository/categorias/add}" method="POST">
+							<div>
+								<label>Nombre</label>
+								<input type="text" th:field="*{nombre}" id="nombre" class="form-control" />
+								<div class="alert alert-danger" th:if="${errores != null && errores.containsKey('nombre')}"
+								th:text="${errores.nombre}"></div>
+							</div>
+							<a href="javascript:void(0);" class="btn btn-info" onclick="document.form.submit();">Enviar</a>	
+						</form>
+					</div>
+				</main>	
+		
+		<footer th:insert="layout/frontend :: footer"></footer>
+		<div th:insert="layout/frontend :: scripts"></div>
+	</body>
+</html>
