@@ -3,11 +3,14 @@ package com.cristianml.controllers;
 import java.util.HashMap;
 import java.util.Map;
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -17,6 +20,7 @@ import com.cristianml.services.CategoriaService;
 import com.cristianml.utilities.Utilities;
 
 import jakarta.validation.Valid;
+
 
 @Controller
 @RequestMapping("/jpa-repository")
@@ -74,6 +78,42 @@ public class JpaController {
 		}
 	}
 	
+	// Editar categoría
+	@GetMapping("/categorias/edit/{id}")
+	public String categorias_edit(@PathVariable("id") Integer id, Model model) {
+		CategoriaModel categoria = categoriaService.buscarPorId(id);
+		model.addAttribute("categoria", categoria);
+		return "/jpa_repository/categorias_edit";
+	}
+	
+	@PostMapping("/categorias/edit/{id}")
+	public String categorias_editar_post(@Valid CategoriaModel categoria, BindingResult result, Model model
+			, @PathVariable Integer id, RedirectAttributes flash) {
+		// Validamos nuestro dato
+		if(result.hasErrors()) {
+			Map<String, String> errores = new HashMap<>();
+			result.getFieldErrors()
+			.forEach( err -> {
+				errores.put(err.getField(),
+						"El campo ".concat(err.getField()).concat(" ").concat(err.getDefaultMessage()));
+			});
+			
+			model.addAttribute("errores", errores);
+			model.addAttribute("categoria", categoria);
+			return "/jpa_repository/categorias_edit";
+			}
+		
+		// Comprobamos el slug
+		String slug = Utilities.getSlug(categoria.getNombre());
+		categoria.setSlug(slug);
+		categoriaService.save(categoria);
+		flash.addFlashAttribute("clase", "success");
+		flash.addFlashAttribute("mensaje", "El registro fue editado exitosamente.");
+		return "redirect:/jpa-repository/categorias/edit/"+id;
+		
+
+	}
+
 	
 	
 	

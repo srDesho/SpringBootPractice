@@ -1,6 +1,7 @@
 package com.cristianml.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -35,6 +36,16 @@ public class CategoriaService {
 		} else {
 			return true;
 		}
+	}
+	
+	// Buscar por Id
+	public CategoriaModel buscarPorId(Integer id) {
+		Optional<CategoriaModel> object = repository.findById(id);
+		if(object.isPresent()) {
+			return object.get();
+		}
+		return null;
+		
 	}
 	
 	

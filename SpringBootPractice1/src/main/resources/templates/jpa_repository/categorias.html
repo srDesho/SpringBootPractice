@@ -31,7 +31,7 @@
 								<td th:text="${dato.id}"></td>
 								<td th:text="${dato.nombre}"></td>
 								<td>
-									<a href=""><i class="fas fa-edit"></i></a>
+									<a th:href="@{/jpa-repository/categorias/edit/}+${dato.id}"><i class="fas fa-edit"></i></a>
 									<!-- <a th:href="@{/jpa-repository/categorias/delete/}+${dato.id}"><i class="fas fa-trash"></i></a> -->
 									<!-- El siguiente código es para mostrar mensaje de alerta si está seguro de eliminar -->
 									<a href="javascript:void(0);" th:onclick="'eliminar(\'/jpa-repository/categorias/delete/'+ ${dato.id} +'\')'" >

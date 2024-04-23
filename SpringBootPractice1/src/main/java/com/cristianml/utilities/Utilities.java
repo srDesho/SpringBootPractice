@@ -1,5 +1,4 @@
 package com.cristianml.utilities;
-
 import java.text.Normalizer;
 import java.util.Locale;
 import java.util.regex.Pattern;
