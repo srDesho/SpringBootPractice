@@ -29,6 +29,11 @@ public class CategoriaService {
 		repository.save(categoria);
 	}
 	
+	// delete
+	public void delete(Integer id) {
+		repository.deleteById(id);
+	}
+	
 	// Buscar por slug
 	public boolean buscarPorSlug(String slug) {
 		if( repository.existsBySlug(slug) ) {
