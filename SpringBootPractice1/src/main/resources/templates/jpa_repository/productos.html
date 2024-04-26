@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="layout/frontend :: head(~{::title}, ~{::link})">
+			<link th:href="@{/css/estilos.css}" rel="stylesheet"/>
+
+	</head>
+	
+	<body>
+		<div class="container">
+					<header th:insert="/layout/frontend :: cabecero"></header>
+					<div th:insert="/layout/frontend :: menu"></div>
+				</div>
+				
+				<main class="container">
+					<h1>Lista de Productos</h1>
+						<div th:if="${mensaje!=null}" th:class="'alert alert-' + ${clase} + ' alert-dismissible fade show'">
+							<span th:text="${mensaje}"></span>
+							<button th:if="${mensaje!=null}" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+					<hr/>
+					<p>
+						<a th:href="@{/jpa-repository/categorias/add}" class="btn btn-success">Crear</a>
+					</p>
+										
+					<table class="table table-bordered">
+						<thead class="thead-dark">
+							<tr>
+								<th>ID</th>
+								<th>Categoría</th>
+								<th>Nombre</th>
+								<th>Precio</th>
+								<th>Foto</th>
+								<th>Acciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="dato:${datos}">
+								<td th:text="${dato.id}"></td>
+								<td th:text="${dato.categoriaId.nombre}"></td>
+								<td th:text="${dato.nombre}"></td>
+								<td th:text="'$'+${#numbers.formatDecimal(dato.precio, 0, 'POINT', 0, 'POINT')}"></td>
+								<td style="text-align: center;">
+									<a th:href="${ruta_upload}+'producto/'+${dato.foto}" class="fancybox">
+										<img th:src="${ruta_upload}+'producto/'+${dato.foto}" width="100" height="100"/>
+									</a>
+								</td>
+								<td>
+									<a th:href="@{/jpa-repository/categorias/edit/}+${dato.id}"><i class="fas fa-edit"></i></a>
+									<!-- <a th:href="@{/jpa-repository/categorias/delete/}+${dato.id}"><i class="fas fa-trash"></i></a> -->
+									<!-- El siguiente código es para mostrar mensaje de alerta si está seguro de eliminar -->
+									<a href="javascript:void(0);" th:onclick="'eliminar(\'/jpa-repository/categorias/delete/'+ ${dato.id} +'\')'" >
+										<i class="fas fa-trash"></i>
+										</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</main>	
+		
+		<footer th:insert="layout/frontend :: footer"></footer>
+		<div th:insert="layout/frontend :: scripts"></div>
+	</body>
+</html>

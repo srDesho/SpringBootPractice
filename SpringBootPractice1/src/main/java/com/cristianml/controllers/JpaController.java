@@ -6,17 +6,21 @@ import java.util.Map;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cristianml.models.CategoriaModel;
+import com.cristianml.models.ProductoModel;
 import com.cristianml.services.CategoriaService;
+import com.cristianml.services.ProductoService;
 import com.cristianml.utilities.Utilities;
 
 import jakarta.validation.Valid;
@@ -28,7 +32,12 @@ public class JpaController {
 	
 	@Autowired
 	private CategoriaService categoriaService;
+	@Autowired
+	private ProductoService productoService;
 
+	@Value("${cristian.valores.ruta.url_base}")
+	String ruta_upload;
+	
 	@GetMapping("")
 	public String home() {
 		return "jpa_repository/home";
@@ -130,6 +139,20 @@ public class JpaController {
 		}
 	}
 	
+	// ================================== PRODUCTOS ===============================================================
+	// Listar Productos
+	@GetMapping("/productos")
+	public String productos(Model model) {
+		model.addAttribute("datos" , this.productoService.listar());
+		model.addAttribute("categorias" , categoriaService.listar());
+		return "/jpa_repository/productos";
+	}
+	
+	// ========================================== CAMPOS GENÉRICOS ========================================
+	@ModelAttribute
+	public void setGenerics(Model model) {
+		model.addAttribute("ruta_upload", this.ruta_upload);
+	}
 	
 	
 	
