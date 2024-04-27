@@ -207,8 +207,57 @@ public class JpaController {
 		productoService.save(producto);
 		flash.addFlashAttribute("clase", "success");
 		flash.addFlashAttribute("mensaje", "Se creó el registro exitosamente.");
-		return "redirect:/jpa-repository/productos/add";
+		return "redirect:/jpa-repository/productos/edit";
 	}
+	
+	// Editar producto
+	@GetMapping("/productos/edit/{id}")
+	public String productos_edit(@PathVariable("id") Integer id, Model model) {
+		model.addAttribute("producto", productoService.findById(id));
+		model.addAttribute("categorias", this.categoriaService.listar());
+		return "/jpa_repository/productos_edit";
+	}
+	
+	@PostMapping("/productos/edit/{id}")
+	public String productos_edit_post(@Valid ProductoModel producto, BindingResult result, RedirectAttributes flash
+			,@PathVariable("id") Integer id , @RequestParam("archivoImagen") MultipartFile multiPart, Model model ) {
+		// Validamos nuestro dato
+		if(result.hasErrors()) {
+			Map<String, String> errores = new HashMap<>();
+			result.getFieldErrors()
+			.forEach( err -> {
+				errores.put(err.getField(),
+						"El campo ".concat(err.getField()).concat(" ").concat(err.getDefaultMessage()));
+			});
+			
+			model.addAttribute("errores", errores);
+			model.addAttribute("producto", producto);
+			return "/jpa_repository/productos_edit";
+			}
+		
+		if (!multiPart.isEmpty()) {
+			// Creamos el nombre de la imágen y a su vez se guarda la imágen gracias a nuestra utilidad creada en el paquete Utilitie
+			String nombreImagen = Utilities.guardarArchivo(multiPart, this.ruta_upload_server + "producto/");
+			// Verificamos si es una imágen aceptada
+			if(nombreImagen == "no") {
+				flash.addFlashAttribute("clase", "danger");
+				flash.addFlashAttribute("mensaje", "El archivo para la imágen no es válido, debe ser JPG|JPEG|PNG");
+				model.addAttribute("producto", producto);
+				return "redirect:/jpa-repository/productos/edit/"+id;
+			} 
+			if (nombreImagen != null) {
+				producto.setFoto(nombreImagen);
+			}
+		}
+		// Creamos nuestro slug automático
+		String slug = Utilities.getSlug(producto.getNombre());
+		producto.setSlug(slug);
+		productoService.save(producto);
+		flash.addFlashAttribute("clase", "success");
+		flash.addFlashAttribute("mensaje", "Se editó el registro exitosamente.");
+		return "redirect:/jpa-repository/productos/edit/"+id;
+	}
+	
 	
 	// ========================================== CAMPOS GENÉRICOS ========================================
 	@ModelAttribute

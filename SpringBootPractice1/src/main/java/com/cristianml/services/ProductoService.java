@@ -1,6 +1,7 @@
 package com.cristianml.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -24,5 +25,15 @@ public class ProductoService {
 	// Guardar Producto
 	public void save(ProductoModel producto) {
 		repository.save(producto);
+	}
+	
+	// Obtener por id
+	public ProductoModel findById(Integer id) {
+		Optional<ProductoModel> optional = repository.findById(id);
+		if(optional.isPresent()) {
+			return optional.get();
+		}
+		return null;
+		
 	}
 }
