@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="layout/frontend :: head(~{::title}, ~{::link})">
+			<link th:href="@{/css/estilos.css}" rel="stylesheet"/>
+
+	</head>
+	
+	<body>
+		<div class="container">
+					<header th:insert="/layout/frontend :: cabecero"></header>
+					<div th:insert="/layout/frontend :: menu"></div>
+				</div>
+				
+				<main class="container">
+					<h1>Agregar Producto</h1>
+					<div th:if="${mensaje!=null}" th:class="'alert alert-' + ${clase} + ' alert-dismissible fade show'">
+							<span th:text="${mensaje}"></span>
+							<button th:if="${mensaje!=null}" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+					<div>
+						<form name="form" th:object="${producto}" th:action="@{/jpa-repository/productos/add}" enctype="multipart/form-data" method="POST">
+							<div class="form-group">
+								<label>Categoría</label>
+								<select th:field="*{categoriaId}" id="categoriaId" class="form-control">
+									<option th:each="categoria:${categorias}" th:value="${categoria.id}" th:text="${categoria.nombre}"></option>
+								</select>
+							<div class="form-group">
+								<label>Nombre</label>
+								<input type="text" th:field="*{nombre}" id="nombre" class="form-control" />
+								<div class="alert alert-danger" th:if="${errores != null && errores.containsKey('nombre')}"
+								th:text="${errores.nombre}"></div>
+							</div>
+							<div class="form-group">
+								<label>Precio</label>
+								<input type="text" th:field="*{precio}" id="precio" class="form-control" 
+								required="true" onkeypress="return soloNumeros(event)" />
+								<div class="alert alert-danger" th:if="${errores != null && errores.containsKey('precio')}"
+								th:text="${errores.precio}"></div>
+							</div>
+							<div class="form-group">
+								<label>Descripción</label>
+								<textarea type="text" th:field="*{descripcion}" id="descripcion" class="form-control"
+								rows="5" cols="30"></textarea>
+								<div class="alert alert-danger" th:if="${errores != null && errores.containsKey('descripcion')}"
+								th:text="${errores.descripcion}"></div>
+							</div>
+							<div class="form-group">
+								<label>Imágen</label>
+								<input type="file" name="archivoImagen" id="archivoImagen" class="form-control"/>
+							</div>
+							<hr/>
+							<a href="javascript:void(0);" class="btn btn-info" onclick="document.form.submit();">Enviar</a>	
+						</form>
+					</div>
+				</main>	
+		
+		<footer th:insert="layout/frontend :: footer"></footer>
+		<div th:insert="layout/frontend :: scripts"></div>
+	</body>
+</html>

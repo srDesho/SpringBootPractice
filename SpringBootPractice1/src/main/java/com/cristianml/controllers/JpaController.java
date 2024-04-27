@@ -1,5 +1,7 @@
 package com.cristianml.controllers;
 
+import java.io.File;
+import java.net.http.HttpClient.Redirect;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cristianml.models.CategoriaModel;
@@ -37,6 +41,9 @@ public class JpaController {
 
 	@Value("${cristian.valores.ruta.url_base}")
 	String ruta_upload;
+	
+	@Value("${cristian.valores.ruta}")
+	private String ruta_upload_server;
 	
 	@GetMapping("")
 	public String home() {
@@ -148,12 +155,68 @@ public class JpaController {
 		return "/jpa_repository/productos";
 	}
 	
+	// Crear producto
+	@GetMapping("/productos/add")
+	public String productos_add(Model model) {
+		model.addAttribute("producto", new ProductoModel());
+		model.addAttribute("categorias", this.categoriaService.listar());
+		return "jpa_repository/productos_add";
+	}
+	
+	@PostMapping("/productos/add")
+	public String productos_add_post(@Valid ProductoModel producto, BindingResult result, RedirectAttributes flash
+			, @RequestParam("archivoImagen") MultipartFile multiPart, Model model ) {
+		// Validamos nuestro dato
+		if(result.hasErrors()) {
+			Map<String, String> errores = new HashMap<>();
+			result.getFieldErrors()
+			.forEach( err -> {
+				errores.put(err.getField(),
+						"El campo ".concat(err.getField()).concat(" ").concat(err.getDefaultMessage()));
+			});
+			
+			model.addAttribute("errores", errores);
+			model.addAttribute("producto", producto);
+			return "/jpa_repository/productos_add";
+			}
+		// Validamos la imágen la imágen
+		if(multiPart.isEmpty()) {
+			flash.addFlashAttribute("clase", "danger");
+			flash.addFlashAttribute("mensaje", "El archivo para la imágen es obligatorio, debe ser JPG|JPEG|PNG");
+			model.addAttribute("producto", producto);
+			return "redirect:/jpa-repository/productos/add";
+		} 
+		
+		if (!multiPart.isEmpty()) {
+			// Creamos el nombre de la imágen y a su vez se guarda la imágen gracias a nuestra utilidad creada en el paquete Utilitie
+			String nombreImagen = Utilities.guardarArchivo(multiPart, this.ruta_upload_server + "producto/");
+			// Verificamos si es una imágen aceptada
+			if(nombreImagen == "no") {
+				flash.addFlashAttribute("clase", "danger");
+				flash.addFlashAttribute("mensaje", "El archivo para la imágen no es válido, debe ser JPG|JPEG|PNG");
+				model.addAttribute("producto", producto);
+				return "redirect:/jpa-repository/productos/add";
+			} 
+			if (nombreImagen != null) {
+				producto.setFoto(nombreImagen);
+			}
+		}
+		// Creamos nuestro slug automático
+		String slug = Utilities.getSlug(producto.getNombre());
+		producto.setSlug(slug);
+		productoService.save(producto);
+		flash.addFlashAttribute("clase", "success");
+		flash.addFlashAttribute("mensaje", "Se creó el registro exitosamente.");
+		return "redirect:/jpa-repository/productos/add";
+	}
+	
 	// ========================================== CAMPOS GENÉRICOS ========================================
 	@ModelAttribute
 	public void setGenerics(Model model) {
 		model.addAttribute("ruta_upload", this.ruta_upload);
 	}
 	
+	// 
 	
 	
 }

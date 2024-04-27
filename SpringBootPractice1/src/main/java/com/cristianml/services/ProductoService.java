@@ -20,4 +20,9 @@ public class ProductoService {
 	public List<ProductoModel> listar() {
 		return repository.findAll();
 	}
+	
+	// Guardar Producto
+	public void save(ProductoModel producto) {
+		repository.save(producto);
+	}
 }
