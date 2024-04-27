@@ -207,7 +207,7 @@ public class JpaController {
 		productoService.save(producto);
 		flash.addFlashAttribute("clase", "success");
 		flash.addFlashAttribute("mensaje", "Se creó el registro exitosamente.");
-		return "redirect:/jpa-repository/productos/edit";
+		return "redirect:/jpa-repository/productos/add";
 	}
 	
 	// Editar producto
@@ -256,6 +256,29 @@ public class JpaController {
 		flash.addFlashAttribute("clase", "success");
 		flash.addFlashAttribute("mensaje", "Se editó el registro exitosamente.");
 		return "redirect:/jpa-repository/productos/edit/"+id;
+	}
+	
+	// Delete Producto
+	@GetMapping("/productos/delete/{id}")
+	public String productos_delete(@PathVariable("id") Integer id, RedirectAttributes flash) {
+		ProductoModel producto = productoService.findById(id);
+		try {
+			// obtenemos la imágen desde el servidor para eliminarlo del mismo mientra eliminamos el registro
+			File objImagen = new File(ruta_upload_server+"/producto/"+producto.getFoto());
+			if( objImagen.delete() ) {
+				this.productoService.deleteById(id);
+				flash.addFlashAttribute("clase", "success");
+				flash.addFlashAttribute("mensaje", "Se eliminó el registro exitosamente.");
+			} else {
+				flash.addFlashAttribute("clase", "danger");
+				flash.addFlashAttribute("mensaje", "No se pudo eliminar el registro, intentelo más tarde.");
+			}	
+		} catch (Exception e) {
+			flash.addFlashAttribute("clase", "danger");
+			flash.addFlashAttribute("mensaje", "No se pudo eliminar el registro, intentelo más tarde.");
+			return "redirect:/jpa-repository/productos";
+		}
+		return "redirect:/jpa-repository/productos";
 	}
 	
 	

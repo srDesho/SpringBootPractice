@@ -27,6 +27,11 @@ public class ProductoService {
 		repository.save(producto);
 	}
 	
+	// Delete por id
+	public void deleteById(Integer id) {
+		repository.deleteById(id);
+	}
+	
 	// Obtener por id
 	public ProductoModel findById(Integer id) {
 		Optional<ProductoModel> optional = repository.findById(id);
