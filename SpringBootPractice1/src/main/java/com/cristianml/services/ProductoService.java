@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.cristianml.models.ProductoModel;
@@ -20,6 +21,11 @@ public class ProductoService {
 	
 	public List<ProductoModel> listar() {
 		return repository.findAll();
+	}
+	
+	// Listar descendente
+	public List<ProductoModel> listarDescending() {
+		return repository.findAll(Sort.by("id").descending());
 	}
 	
 	// Guardar Producto

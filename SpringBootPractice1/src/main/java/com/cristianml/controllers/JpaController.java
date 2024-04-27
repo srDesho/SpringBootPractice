@@ -23,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cristianml.models.CategoriaModel;
 import com.cristianml.models.ProductoModel;
+import com.cristianml.repositories.ICategoriaRepository;
 import com.cristianml.services.CategoriaService;
 import com.cristianml.services.ProductoService;
 import com.cristianml.utilities.Utilities;
@@ -150,7 +151,7 @@ public class JpaController {
 	// Listar Productos
 	@GetMapping("/productos")
 	public String productos(Model model) {
-		model.addAttribute("datos" , this.productoService.listar());
+		model.addAttribute("datos" , this.productoService.listarDescending());
 		model.addAttribute("categorias" , categoriaService.listar());
 		return "/jpa_repository/productos";
 	}
@@ -280,6 +281,9 @@ public class JpaController {
 		}
 		return "redirect:/jpa-repository/productos";
 	}
+	
+	// ORDENAR REGISTROS DE PRODUCTOS CON SORT
+	
 	
 	
 	// ========================================== CAMPOS GENÉRICOS ========================================
