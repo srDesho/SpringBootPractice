@@ -12,7 +12,7 @@
 				</div>
 				
 				<main class="container">
-					<h1>Lista de Productos</h1>
+					<h1 th:text="'Productos de la categoria: '+${categoria.nombre}"></h1>
 						<div th:if="${mensaje!=null}" th:class="'alert alert-' + ${clase} + ' alert-dismissible fade show'">
 							<span th:text="${mensaje}"></span>
 							<button th:if="${mensaje!=null}" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -36,10 +36,7 @@
 						<tbody>
 							<tr th:each="dato:${datos}">
 								<td th:text="${dato.id}"></td>
-								<td>
-									<a th:href="@{/jpa-repository/productos/categorias/}+${dato.categoriaId.id}" th:text="${dato.categoriaId.nombre}"
-									th:title="${dato.categoriaId.nombre}"></a>
-								</td>
+								<td th:text="${dato.categoriaId.nombre}"></td>
 								<td th:text="${dato.nombre}"></td>
 								<td th:text="'$'+${#numbers.formatDecimal(dato.precio, 0, 'POINT', 0, 'POINT')}"></td>
 								<td style="text-align: center;">

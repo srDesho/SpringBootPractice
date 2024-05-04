@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cristianml.models.CategoriaModel;
@@ -282,7 +284,18 @@ public class JpaController {
 		return "redirect:/jpa-repository/productos";
 	}
 	
-	// ORDENAR REGISTROS DE PRODUCTOS CON SORT
+	// BUSCAR PRODUCTOS POR CATEGORIAS
+	@GetMapping("/productos/categorias/{id}")
+	public String productos_categorias(@PathVariable Integer id, Model model) {
+		CategoriaModel categoria = categoriaService.buscarPorId(id);
+		// Verificamos si la categoría existe, para saber que no sea una inyección malicia
+		if (categoria == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "página no encontrada");
+		}
+		model.addAttribute("categoria", categoria);
+		model.addAttribute("datos", this.productoService.buscarPorCategoria(categoria));
+		return "/jpa_repository/productos_categorias";
+	}
 	
 	
 	
@@ -292,7 +305,6 @@ public class JpaController {
 		model.addAttribute("ruta_upload", this.ruta_upload);
 	}
 	
-	// 
 	
 	
 }

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.cristianml.models.CategoriaModel;
 import com.cristianml.models.ProductoModel;
 import com.cristianml.repositories.IProductoRepository;
 
@@ -36,6 +37,11 @@ public class ProductoService {
 	// Delete por id
 	public void deleteById(Integer id) {
 		repository.deleteById(id);
+	}
+	
+	// Listar por categoría
+	public List<ProductoModel> buscarPorCategoria(CategoriaModel categoria) {
+		return repository.findAllByCategoriaId(categoria);
 	}
 	
 	// Obtener por id
